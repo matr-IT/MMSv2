@@ -1,0 +1,26 @@
+{% extends 'index.html' %}
+{% block content %}
+  <h2>Список рассылок</h2>
+  <p><a href="{% url 'mail_management_service:mailing-create' %}">Создать новую рассылку</a></p>
+  <ul>
+    {% for mailing in mailings %}
+      <li>
+        <a href="{% url 'mail_management_service:mailing-detail' mailing.pk %}">{{ mailing.message.subject }}</a>
+        — {{ mailing.start_time|date:"Y-m-d H:i" }} — {{ mailing.end_time|date:"Y-m-d H:i" }}
+      </li>
+    {% empty %}
+      <li>Рассылок пока нет.</li>
+    {% endfor %}
+  </ul>
+  {% if is_paginated %}
+    <div>
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">Prev</a>
+      {% endif %}
+      <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+      {% endif %}
+    </div>
+  {% endif %}
+{% endblock %}

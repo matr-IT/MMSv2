@@ -1,0 +1,13 @@
+{% extends 'index.html' %}
+{% block content %}
+  <h2>Сообщение #{{ object.pk }}</h2>
+  <p><strong>Тема:</strong> {{ object.subject }}</p>
+  <p><strong>Текст:</strong><br> {{ object.body|linebreaks }}</p>
+  <p><strong>Получатели:</strong> {{ object.recipients }}</p>
+  <p><strong>Создано:</strong> {{ object.created_at }}</p>
+  <p>
+    <a href="{% url 'mail_management_service:message-update' object.pk %}">Редактировать</a> |
+    <a href="{% url 'mail_management_service:message-delete' object.pk %}">Удалить</a> |
+    <a href="{% url 'mail_management_service:message-list' %}">Назад</a>
+  </p>
+{% endblock %}

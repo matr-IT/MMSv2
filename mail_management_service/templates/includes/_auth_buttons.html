@@ -1,0 +1,27 @@
+{% load static %}
+<div style="position:relative;">
+  <nav style="display:flex;justify-content:space-between;align-items:center;">
+    <div style="display:flex;gap:12px;align-items:center;">
+      <a class="btn" href="{% url 'mail_management_service:index' %}" style="background:transparent;color:var(--accent);padding:6px 8px;border-radius:6px;">Главная</a>
+      <a class="btn" href="{% url 'mail_management_service:mailing-list' %}" style="background:transparent;color:var(--accent);padding:6px 8px;border-radius:6px;">Рассылки</a>
+      <a class="btn" href="{% url 'mail_management_service:recipient-list' %}" style="background:transparent;color:var(--accent);padding:6px 8px;border-radius:6px;">Получатели</a>
+        <a class="btn" href="{% url 'mail_management_service:message-list' %}" style="background:transparent;color:var(--accent);padding:6px 8px;border-radius:6px;">Письма</a>
+      <a class="btn" href="{% url 'mail_management_service:mailing-attempt-list' %}" style="background:transparent;color:var(--accent);padding:6px 8px;border-radius:6px;">Статистика</a>
+    </div>
+
+    <div>
+      {% url 'users:login' as login_url %}
+      {% url 'users:register' as register_url %}
+      {% if user.is_authenticated %}
+        <span style="margin-right:8px;color:#111827;">{{ user.email }}</span>
+        {# скрываем кнопку выхода, если мы уже на странице входа или регистрации #}
+        {% if request.path != login_url and request.path != register_url %}
+          <a class="btn" href="{% url 'users:logout' %}" style="background:var(--accent);">Выйти</a>
+        {% endif %}
+      {% else %}
+        <a class="btn" href="{% url 'users:login' %}" style="margin-right:8px;">Вход</a>
+        <a class="btn" href="{% url 'users:register' %}">Регистрация</a>
+      {% endif %}
+    </div>
+  </nav>
+</div>

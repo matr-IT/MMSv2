@@ -1,0 +1,11 @@
+{% extends 'index.html' %}
+{% block content %}
+  <h2>Пользователи сервиса</h2>
+  <ul>
+    {% for u in users %}
+      <li>{{ u.email }}{% if not u.is_active %} (Заблокирован){% endif %} - <form method="post" action="{% url 'users:user-block' u.pk %}" style="display:inline">{% csrf_token %}<button type="submit">Заблокировать</button></form></li>
+    {% empty %}
+      <li>Пользователей нет</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

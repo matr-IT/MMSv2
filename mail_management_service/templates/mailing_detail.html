@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+{% block content %}
+  <h2>{{ mailing.message.subject }}</h2>
+  <p>{{ mailing.message.body }}</p>
+  <p>Сроки: {{ mailing.start_time|date:"Y-m-d H:i" }} — {{ mailing.end_time|date:"Y-m-d H:i" }}</p>
+  <p>Статус: {{ mailing.get_status_display|default:mailing.status }}</p>
+  <p>Получателей: {{ mailing.recipients.count }}</p>
+  <p>
+    <a href="{% url 'mail_management_service:mailing-update' mailing.pk %}">Редактировать</a> |
+    <a href="{% url 'mail_management_service:mailing-delete' mailing.pk %}">Удалить</a>
+  </p>
+    <form method="post" action="{% url 'mail_management_service:send-mailing' mailing.id %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-warning" onclick="return confirm('Отправить рассылку сейчас?');">
+        Отправить сейчас
+      </button>
+    </form>
+{% endblock %}
