@@ -1,0 +1,8 @@
+{% extends 'index.html' %}
+{% block content %}
+  <h2>{{ recipient.email }}</h2>
+  <p>{{ recipient.name }}</p>
+  <p>{{ recipient.comment }}</p>
+  <p>Владелец: {{ recipient.owner.email }}</p>
+  <p><a href="{% url 'mail_management_service:recipient-update' recipient.pk %}">Редактировать</a> | <a href="{% url 'mail_management_service:recipient-delete' recipient.pk %}">Удалить</a></p>
+{% endblock %}

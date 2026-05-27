@@ -1,0 +1,49 @@
+{% extends 'index.html' %}
+{% block content %}
+  <h2>Вход</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  {% if form.non_field_errors %}
+    <div class="alert alert-danger" role="alert">
+      {{ form.non_field_errors }}
+    </div>
+  {% endif %}
+
+  <form method="post" action="{% url 'users:login' %}" novalidate>
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next|default:'/' }}" />
+
+    <p>
+      {{ form.username.label_tag }}
+      {{ form.username }}
+      <div class="field-errors" role="alert">{{ form.username.errors }}</div>
+    </p>
+
+    <p>
+      {{ form.password.label_tag }}
+      {{ form.password }}
+      <div class="field-errors" role="alert">{{ form.password.errors }}</div>
+    </p>
+
+    <button type="submit">Войти</button>
+  </form>
+
+  <p>
+    <a href="{% url 'users:password_reset_form' %}">Забыли пароль?</a>
+    {% if registration_allowed %}
+      | <a href="{% url 'users:register' %}">Регистрация</a>
+    {% endif %}
+  </p>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var f = document.querySelector('form input[name="username"], form input[type="email"], form input');
+      if (f) f.focus();
+    });
+  </script>
+{% endblock %}

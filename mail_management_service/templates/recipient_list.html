@@ -1,0 +1,12 @@
+{% extends 'index.html' %}
+{% block content %}
+  <h2>Клиенты</h2>
+  <p><a href="{% url 'mail_management_service:recipient-create' %}">Создать клиента</a></p>
+  <ul>
+    {% for r in recipients %}
+      <li><a href="{% url 'mail_management_service:recipient-detail' r.pk %}">{{ r.email }}</a> {% if r.owner %}- {{ r.owner.email }}{% endif %}</li>
+    {% empty %}
+      <li>Клиентов нет.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
