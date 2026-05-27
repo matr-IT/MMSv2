@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mail Management Service</title>
+  <style>
+    :root{--bg:#f7f8fa;--card:#ffffff;--muted:#6b7280;--accent:#2563eb}
+    html,body{height:100%;margin:0;background:var(--bg);color:#111827}
+    body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;display:flex;align-items:center;justify-content:center}
+    .card{width:min(900px,96vw);background:var(--card);padding:28px;border-radius:12px;box-shadow:0 6px 20px rgba(17,24,39,0.06)}
+    h1{margin:0 0 8px;font-size:26px;text-align:center}
+    .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+    .metric{flex:1 1 200px;background:#f8fafc;padding:16px;border-radius:8px;text-align:center}
+    .metric .value{font-size:22px;font-weight:700}
+    .metric .label{color:var(--muted);font-size:13px}
+    .timeline{margin-top:18px}
+    .timebar{display:flex;align-items:center;gap:8px;font-family:monospace}
+    .time-segment{flex:1;height:10px;background:#e6eefc;border-radius:6px;position:relative}
+    .work{position:absolute;left:0;right:0;height:100%;background:var(--accent);opacity:0.15;border-radius:6px}
+    .time-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+    .small{font-size:13px;color:var(--muted)}
+    footer{margin-top:20px;font-size:13px;color:var(--muted);text-align:center}
+    a.btn{display:inline-block;padding:8px 12px;border-radius:8px;text-decoration:none;color:white;background:var(--accent);font-weight:600}
+    @media (max-width:420px){.card{padding:18px}h1{font-size:20px}}
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    {% load static %}
+    {% include 'includes/_auth_buttons.html' %}
+    <h1>Mail Management Service</h1>
+
+    {% block content %}
+    {% load cache %}
+
+    {% cache 60 index_metrics %}
+    <div class="row">
+      <div class="metric">
+        <div class="value">{{ total_mailings }}</div>
+        <div class="label">Всего рассылок</div>
+      </div>
+      <div class="metric">
+        <div class="value">{{ active_mailings }}</div>
+        <div class="label">Активные рассылки</div>
+      </div>
+      <div class="metric">
+        <div class="value">{{ total_recipients }}</div>
+        <div class="label">Уникальные получатели</div>
+      </div>
+    </div>
+    {% endcache %}
+
+    <section class="timeline">
+      <h2 style="font-size:16px;margin:18px 0 8px">Текущие активные рассылки</h2>
+      {% if active_mailings_list and active_mailings_list.count %}
+        {% for mailing in active_mailings_list %}
+          <div style="margin-bottom:14px;padding:12px;border-radius:8px;background:#ffffff;box-shadow:0 2px 6px rgba(2,6,23,0.04);">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+              <div style="font-weight:600">{{ mailing.message.subject }}</div>
+              <div class="small">Статус: {{ mailing.get_status_display|default:mailing.status }}</div>
+            </div>
+
+            <div class="timebar" title="{{ mailing.start_time }} — {{ mailing.end_time }}">
+              <div class="small">[----Прошлое----]</div>
+              <div class="time-segment" style="flex:1;">
+                <div class="work" style="left:15%;right:15%"></div>
+              </div>
+              <div class="small">[----Будущее----]</div>
+            </div>
+
+            <div class="time-labels">
+              <div>{{ mailing.start_time|date:"Y-m-d H:i" }}</div>
+              <div>{{ now|date:"Y-m-d H:i" }}</div>
+              <div>{{ mailing.end_time|date:"Y-m-d H:i" }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="small">Нет активных рассылок в данный момент.</div>
+      {% endif %}
+    </section>
+
+    <div style="display:flex;justify-content:center;margin-top:16px">
+      <a class="btn" href="{% url 'admin:index' %}">Админка</a>
+    </div>
+
+    <footer>
+      © {% now "Y" %} Mail Management Service
+    </footer>
+    {% endblock %}
+  </main>
+ </body>
+ </html>

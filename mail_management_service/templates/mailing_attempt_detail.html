@@ -1,0 +1,39 @@
+{% extends 'index.html' %}
+{% block content %}
+  <h2>Детали попытки рассылки #{{ attempt.pk }}</h2>
+
+  <p><strong>Рассылка:</strong> {{ attempt.mailing }}</p>
+  <p><strong>Пользователь:</strong> {{ attempt.user }}</p>
+  <p><strong>Статус:</strong> {{ attempt.status }}</p>
+  <p><strong>Создано:</strong> {{ attempt.created_at }}</p>
+  <p><strong>Всего получателей:</strong> {{ attempt.recipients_count }}</p>
+  <p><strong>Успешно / Неудачно:</strong> {{ attempt.success_count }} / {{ attempt.failed_count }}</p>
+
+  {% if attempt.log %}
+    <h3>Лог</h3>
+    <pre>{{ attempt.log }}</pre>
+  {% endif %}
+
+  {% if attempt.recipient_attempts.all %}
+    <h3>Попытки по получателям</h3>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Получатель</th><th>Статус</th><th>Ответ</th></tr>
+      </thead>
+      <tbody>
+        {% for ra in attempt.recipient_attempts.all %}
+        <tr>
+          <td>{{ ra.pk }}</td>
+          <td>{{ ra.recipient }}</td>
+          <td>{{ ra.status }}</td>
+          <td>{{ ra.response }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Записей нет.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <p><a href="{% url 'mail_management_service:mailing-attempt-list' %}">Назад к списку попыток</a> | <a href="/">На главную</a></p>
+{% endblock %}

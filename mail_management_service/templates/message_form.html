@@ -1,0 +1,9 @@
+{% extends 'index.html' %}
+{% block content %}
+  <h2>{% if form.instance.pk %}Редактировать сообщение{% else %}Создать сообщение{% endif %}</h2>
+  <form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+    <a href="{% url 'mail_management_service:message-list' %}">Отмена</a>
+  </form>
+{% endblock %}
